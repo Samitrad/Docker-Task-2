@@ -1,0 +1,60 @@
+
+version: '3'
+
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      MINIO_ACCESS_KEY: "minioKEY"
+      MINIO_SECRET_KEY: "minioKEY1"
+    depends_on:
+      - minio
+    networks:
+      - mynet  
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:5000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: "minioKEY"
+      MINIO_SECRET_KEY: "minioKEY1"
+    volumes:
+      - minio-data:/export
+    command: server /data
+    networks:
+      - mynet
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:9000/minio/health/live || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+  python-script:
+    build: .
+    depends_on:
+      - minio
+    environment:
+      MINIO_ACCESS_KEY: "minioKEY"
+      MINIO_SECRET_KEY: "minioKEY1"
+    command: python app.py
+    networks:
+      - mynet   
+
+volumes:
+  minio-data:
+  
+networks:
+  mynet:
+    driver: bridge  
+  
+  
+  
