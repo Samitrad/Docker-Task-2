@@ -11,9 +11,7 @@ services:
       MINIO_ACCESS_KEY: "minioKEY"
       MINIO_SECRET_KEY: "minioKEY1"
     depends_on:
-      - minio
-    networks:
-      - mynet  
+      - minio 
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:5000/ || exit 1"]
       interval: 30s
@@ -31,8 +29,6 @@ services:
     volumes:
       - minio-data:/export
     command: server /data
-    networks:
-      - mynet
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:9000/minio/health/live || exit 1"]
       interval: 30s
@@ -46,15 +42,11 @@ services:
       MINIO_ACCESS_KEY: "minioKEY"
       MINIO_SECRET_KEY: "minioKEY1"
     command: python app.py
-    networks:
-      - mynet   
+    
 
 volumes:
   minio-data:
-  
-networks:
-  mynet:
-    driver: bridge  
+
   
   
   
