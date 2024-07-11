@@ -34,15 +34,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-  python-script:
-    build: .
-    depends_on:
-      - minio
-    environment:
-      MINIO_ACCESS_KEY: "minioKEY"
-      MINIO_SECRET_KEY: "minioKEY1"
-    command: python app.py
-    
 
 volumes:
   minio-data:
